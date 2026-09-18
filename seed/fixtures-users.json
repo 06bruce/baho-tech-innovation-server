@@ -1,0 +1,50 @@
+[
+  {
+    "fullName": "Demo Blind User",
+    "email": "demo.blind@bahotech.dev",
+    "password": "DemoPass123!",
+    "role": "user",
+    "disabilityCategory": "blind",
+    "preferredLanguage": "rw",
+    "preferredTheme": "dark",
+    "accessibilityPreferences": { "screenReaderHints": true, "voiceCommands": true },
+    "phone": "+250780000001",
+    "location": "Kigali, Rwanda"
+  },
+  {
+    "fullName": "Demo Deaf User",
+    "email": "demo.deaf@bahotech.dev",
+    "password": "DemoPass123!",
+    "role": "user",
+    "disabilityCategory": "deaf",
+    "preferredLanguage": "fr",
+    "preferredTheme": "light",
+    "accessibilityPreferences": { "voiceToText": true },
+    "phone": "+250780000002",
+    "location": "Huye, Rwanda"
+  },
+  {
+    "fullName": "Demo Mute User",
+    "email": "demo.mute@bahotech.dev",
+    "password": "DemoPass123!",
+    "role": "user",
+    "disabilityCategory": "mute",
+    "preferredLanguage": "en",
+    "preferredTheme": "light",
+    "accessibilityPreferences": { "textToSpeech": true },
+    "phone": null,
+    "location": "Musanze, Rwanda"
+  },
+  {
+    "fullName": "Demo Mobility User",
+    "email": "demo.mobility@bahotech.dev",
+    "password": "DemoPass123!",
+    "role": "user",
+    "disabilityCategory": "mobility",
+    "preferredLanguage": "sw",
+    "preferredTheme": "dark",
+    "accessibilityPreferences": { "largeText": true, "reduceMotion": true },
+    "phone": "+250780000004",
+    "location": "Nairobi, Kenya"
+  }
+]

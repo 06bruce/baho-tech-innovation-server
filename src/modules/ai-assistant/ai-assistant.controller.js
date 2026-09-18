@@ -1,4 +1,4 @@
-import { generateGeminiContent } from "../../services/gemini.service.js";
+﻿import { generateGeminiContent } from "../../services/gemini.service.js";
 import { isGeminiBusyError, sendGeminiBusyFallback } from "../../services/gemini-fallback.service.js";
 import {
   buildAiCommandPrompt,
@@ -26,7 +26,7 @@ function parseJsonResponse(text) {
 
 export async function navigationHelp(req, res, next) {
   try {
-    const language = req.body?.language || req.user?.preferred_language || "en";
+    const language = req.body?.language || req.user?.preferredLanguage || "en";
     const result = await generateGeminiContent({
       prompt: buildNavigationPrompt({
         message: req.body?.message || "Help me use this page.",
@@ -39,7 +39,7 @@ export async function navigationHelp(req, res, next) {
   } catch (error) {
     if (isGeminiBusyError(error)) {
       return sendGeminiBusyFallback(res, {
-        language: req.body?.language || req.user?.preferred_language || "en",
+        language: req.body?.language || req.user?.preferredLanguage || "en",
         payload: {
           response: "AI navigation help is temporarily limited. You can still use the page menu, tab through controls, or try again shortly.",
         },
@@ -51,7 +51,7 @@ export async function navigationHelp(req, res, next) {
 
 export async function screenReaderSummary(req, res, next) {
   try {
-    const language = req.body?.language || req.user?.preferred_language || "en";
+    const language = req.body?.language || req.user?.preferredLanguage || "en";
     const result = await generateGeminiContent({
       prompt: buildScreenReaderPrompt({
         pageContext: req.body?.pageContext,
@@ -63,7 +63,7 @@ export async function screenReaderSummary(req, res, next) {
   } catch (error) {
     if (isGeminiBusyError(error)) {
       return sendGeminiBusyFallback(res, {
-        language: req.body?.language || req.user?.preferred_language || "en",
+        language: req.body?.language || req.user?.preferredLanguage || "en",
         payload: {
           response: "The AI page summary is temporarily unavailable. You can continue with headings, landmarks, and keyboard navigation while the service recovers.",
         },
@@ -75,7 +75,7 @@ export async function screenReaderSummary(req, res, next) {
 
 export async function conversation(req, res, next) {
   try {
-    const language = req.body?.language || req.user?.preferred_language || "en";
+    const language = req.body?.language || req.user?.preferredLanguage || "en";
     const result = await generateGeminiContent({
       prompt: buildConversationPrompt({
         messages: req.body?.messages || [],
@@ -88,7 +88,7 @@ export async function conversation(req, res, next) {
   } catch (error) {
     if (isGeminiBusyError(error)) {
       return sendGeminiBusyFallback(res, {
-        language: req.body?.language || req.user?.preferred_language || "en",
+        language: req.body?.language || req.user?.preferredLanguage || "en",
         payload: {
           response: "I am temporarily overloaded, but the rest of the dashboard is still available. Please try your question again in a moment.",
         },
@@ -100,7 +100,7 @@ export async function conversation(req, res, next) {
 
 export async function command(req, res, next) {
   try {
-    const language = req.body?.language || req.user?.preferred_language || "en";
+    const language = req.body?.language || req.user?.preferredLanguage || "en";
     const result = await generateGeminiContent({
       prompt: buildAiCommandPrompt({
         command: req.body?.command || "",
@@ -119,7 +119,7 @@ export async function command(req, res, next) {
   } catch (error) {
     if (isGeminiBusyError(error)) {
       return sendGeminiBusyFallback(res, {
-        language: req.body?.language || req.user?.preferred_language || "en",
+        language: req.body?.language || req.user?.preferredLanguage || "en",
         payload: {
           response: "I heard your command, but AI command processing is temporarily busy. Please try again in a moment.",
           actions: [{ type: "none" }],

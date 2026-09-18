@@ -1,23 +1,33 @@
 import { env } from "../config/env.js";
-import { USER_ROLES } from "../models/user.model.js";
+import { USER_ROLES, User } from "../models/user.model.js";
 import { hashPassword } from "../utils/password.js";
 import { normalizeEmail } from "../utils/normalizers.js";
 
-export async function ensureAdminUser(db) {
+/**
+ * Ensure the configured admin account exists (seeded from ADMIN_EMAIL/ADMIN_PASSWORD).
+ * Password changes to ADMIN_PASSWORD in the environment do NOT overwrite an
+ * existing admin — update it through the UI/DB instead (same behaviour as before).
+ */
+export async function ensureAdminUser() {
   if (!env.admin.email || !env.admin.password) return;
 
   const email = normalizeEmail(env.admin.email);
-  const result = await db.query("SELECT id FROM users WHERE email = $1", [email]);
-  const existing = result.rows[0];
+  const existing = await User.findOne({ email }).select("+passwordHash");
   if (existing) return;
 
-  const now = new Date().toISOString();
-  const { hash, salt } = hashPassword(env.admin.password);
+  const { hash, salt, scheme } = hashPassword(env.admin.password);
 
-  await db.query(
-    `INSERT INTO users
-      (full_name, email, password_hash, password_salt, role, disability_category, preferred_language, preferred_theme, accessibility_preferences, created_at, updated_at)
-     VALUES ($1, $2, $3, $4, $5, NULL, 'en', 'light', '{}', $6, $7)`,
-    [env.admin.name, email, hash, salt, USER_ROLES.ADMIN, now, now]
-  );
+  await User.create({
+    fullName: env.admin.name,
+    email,
+    passwordHash: hash,
+    passwordSalt: salt,
+    passwordScheme: scheme,
+    role: USER_ROLES.ADMIN,
+    preferredLanguage: "en",
+    preferredTheme: "light",
+    accessibilityPreferences: {},
+  });
+
+  console.log(`✅ Admin account ensured (${email})`);
 }

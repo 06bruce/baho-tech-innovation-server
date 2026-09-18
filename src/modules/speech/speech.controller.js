@@ -1,4 +1,4 @@
-import { buildAudioTranscriptionPrompt, buildTtsOptimizationPrompt } from "../../services/gemini.prompt-builders.js";
+﻿import { buildAudioTranscriptionPrompt, buildTtsOptimizationPrompt } from "../../services/gemini.prompt-builders.js";
 import { isGeminiBusyError, sendGeminiBusyFallback } from "../../services/gemini-fallback.service.js";
 import { generateGeminiContent } from "../../services/gemini.service.js";
 
@@ -27,7 +27,7 @@ export async function transcribeAudio(req, res, next) {
     }
 
     const result = await generateGeminiContent({
-      prompt: buildAudioTranscriptionPrompt({ language: language || req.user?.preferred_language || "en" }),
+      prompt: buildAudioTranscriptionPrompt({ language: language || req.user?.preferredLanguage || "en" }),
       inlineData: { mimeType, data: audioBase64 },
     });
 
@@ -35,7 +35,7 @@ export async function transcribeAudio(req, res, next) {
   } catch (error) {
     if (isGeminiBusyError(error)) {
       return sendGeminiBusyFallback(res, {
-        language: req.body?.language || req.user?.preferred_language || "en",
+        language: req.body?.language || req.user?.preferredLanguage || "en",
         payload: {
           transcript: "Audio transcription is temporarily unavailable because the AI service is busy. Please try recording again shortly.",
         },
@@ -51,7 +51,7 @@ export async function optimizeTextForSpeech(req, res, next) {
     const result = await generateGeminiContent({
       prompt: buildTtsOptimizationPrompt({
         text,
-        language: req.body?.language || req.user?.preferred_language || "en",
+        language: req.body?.language || req.user?.preferredLanguage || "en",
       }),
     });
 
@@ -59,7 +59,7 @@ export async function optimizeTextForSpeech(req, res, next) {
   } catch (error) {
     if (isGeminiBusyError(error)) {
       return sendGeminiBusyFallback(res, {
-        language: req.body?.language || req.user?.preferred_language || "en",
+        language: req.body?.language || req.user?.preferredLanguage || "en",
         payload: {
           text: String(req.body?.text || ""),
         },

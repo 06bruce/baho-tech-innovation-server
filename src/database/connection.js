@@ -1,41 +1,52 @@
-import { setDefaultResultOrder } from "dns";
-import pg from "pg";
+import mongoose from "mongoose";
 import { env } from "../config/env.js";
-import { schemaSql } from "./schema.js";
+import { deleteExpiredSessions } from "../modules/auth/auth.repository.js";
+import { Message } from "../models/message.model.js";
+import { User } from "../models/user.model.js";
 import { ensureAdminUser } from "./seed.js";
 
-// Force IPv4 DNS resolution — Render free tier does not support IPv6 egress
-setDefaultResultOrder("ipv4first");
+export async function connectDatabase() {
+  if (mongoose.connection.readyState === 1) return mongoose.connection;
 
-let pool = null;
+  mongoose.set("strictQuery", true);
+  mongoose.set("bufferCommands", true);
 
-export function connectDatabase() {
-  if (pool) return pool;
-
-  pool = new pg.Pool({
-    connectionString: env.databaseUrl,
-    ssl: env.nodeEnv === "production" ? { rejectUnauthorized: false } : false,
+  mongoose.connection.on("error", (error) => {
+    console.error("❌ MongoDB connection error:", error.message);
   });
 
-  return pool;
+  mongoose.connection.on("disconnected", () => {
+    if (!isShuttingDown) {
+      console.warn("⚠️ MongoDB connection lost");
+    }
+  });
+
+  await mongoose.connect(env.mongoUri, {
+    serverSelectionTimeoutMS: 10000,
+  });
+
+  isShuttingDown = false;
+  console.log("✅ MongoDB connected");
+  return mongoose.connection;
 }
 
-export function getDatabase() {
-  if (!pool) return connectDatabase();
-  return pool;
+let isShuttingDown = false;
+
+export async function disconnectDatabase() {
+  if (mongoose.connection.readyState === 0) return;
+  isShuttingDown = true;
+  await mongoose.disconnect();
+  console.log("✅ MongoDB disconnected");
 }
 
-export async function initializeDatabase(db) {
-  try {
-    // Run schema creation
-    await db.query(schemaSql);
-    console.log("✅ Database schema initialized successfully");
+export async function initializeDatabase() {
+  await connectDatabase();
 
-    // Seed admin user
-    await ensureAdminUser(db);
-    console.log("✅ Database seeding verified");
-  } catch (error) {
-    console.error("❌ Failed to initialize database:", error);
-    throw error;
-  }
+  // Await index creation so uniqueness (email) is enforced before serving traffic.
+  await Promise.all([User.init(), Message.init()]);
+
+  await deleteExpiredSessions();
+
+  await ensureAdminUser();
+  console.log("✅ Database seeding verified");
 }

@@ -1,38 +1,71 @@
-import { normalizeDisabilityCategory, normalizeEmail, normalizeLanguage, normalizeTheme } from "../../utils/normalizers.js";
+import { body } from "express-validator";
 
-export function validateRegisterPayload(payload = {}) {
-  const fullName = String(payload.fullName || payload.full_name || "").trim();
-  const email = normalizeEmail(payload.email);
-  const password = String(payload.password || "");
-  const confirmPassword = String(payload.confirmPassword || "");
-  const disabilityCategory = normalizeDisabilityCategory(payload.disabilityCategory || payload.disability_category);
-  const preferredLanguage = normalizeLanguage(payload.preferredLanguage || payload.preferred_language);
-  const preferredTheme = normalizeTheme(payload.preferredTheme || payload.preferred_theme);
-  const phone = payload.phone ? String(payload.phone).trim() : null;
-  const location = payload.location ? String(payload.location).trim() : null;
+export const registerValidation = [
+  body("fullName")
+    .trim()
+    .notEmpty()
+    .withMessage("Full name is required.")
+    .isLength({ max: 120 })
+    .withMessage("Full name must be at most 120 characters."),
+  body("email")
+    .trim()
+    .isEmail()
+    .withMessage("A valid email address is required.")
+    .normalizeEmail({
+      all_lowercase: true,
+      gmail_remove_dots: false,
+      gmail_remove_subaddress: false,
+      gmail_convert_googlemaildotcom: false,
+      outlookdotcom_remove_subaddress: false,
+      yahoo_remove_subaddress: false,
+      icloud_remove_subaddress: false,
+    }),
+  body("password")
+    .isLength({ min: 8, max: 128 })
+    .withMessage("Password must be between 8 and 128 characters."),
+  body("confirmPassword")
+    .custom((value, { req }) => {
+      if (value !== req.body.password) throw new Error("Passwords do not match.");
+      return true;
+    }),
+  body("disabilityCategory")
+    .isIn(["blind", "deaf", "mute", "mobility"])
+    .withMessage("Disability category must be one of: blind, deaf, mute, mobility."),
+  body("preferredLanguage")
+    .optional()
+    .isIn(["en", "rw", "fr", "sw"])
+    .withMessage("Preferred language must be one of: en, rw, fr, sw."),
+  body("preferredTheme")
+    .optional()
+    .isIn(["light", "dark"])
+    .withMessage("Preferred theme must be light or dark."),
+  body("phone")
+    .optional({ values: "null" })
+    .trim()
+    .isLength({ max: 30 })
+    .withMessage("Phone number must be at most 30 characters."),
+  body("location")
+    .optional({ values: "null" })
+    .trim()
+    .isLength({ max: 120 })
+    .withMessage("Location must be at most 120 characters."),
+];
 
-  if (!fullName || !email || !password || !confirmPassword || !disabilityCategory) {
-    return { error: "Full name, email, password, confirm password, and disability category are required." };
-  }
-
-  if (password.length < 8) {
-    return { error: "Password must be at least 8 characters." };
-  }
-
-  if (password !== confirmPassword) {
-    return { error: "Passwords do not match." };
-  }
-
-  return { value: { fullName, email, password, disabilityCategory, preferredLanguage, preferredTheme, phone, location } };
-}
-
-export function validateLoginPayload(payload = {}) {
-  const email = normalizeEmail(payload.email);
-  const password = String(payload.password || "");
-
-  if (!email || !password) {
-    return { error: "Email and password are required." };
-  }
-
-  return { value: { email, password } };
-}
+export const loginValidation = [
+  body("email")
+    .trim()
+    .isEmail()
+    .withMessage("A valid email address is required.")
+    .normalizeEmail({
+      all_lowercase: true,
+      gmail_remove_dots: false,
+      gmail_remove_subaddress: false,
+      gmail_convert_googlemaildotcom: false,
+      outlookdotcom_remove_subaddress: false,
+      yahoo_remove_subaddress: false,
+      icloud_remove_subaddress: false,
+    }),
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required."),
+];

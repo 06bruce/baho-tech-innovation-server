@@ -1,13 +1,9 @@
 import { toPublicUser } from "../../models/user.model.js";
-import { loginUser, logoutSession, registerUserWithEmail } from "./auth.service.js";
-import { validateLoginPayload, validateRegisterPayload } from "./auth.validation.js";
+import { loginUser, logoutSession, refreshAccessToken, registerUserWithEmail } from "./auth.service.js";
 
 export async function register(req, res, next) {
   try {
-    const { error, value } = validateRegisterPayload(req.body);
-    if (error) return res.status(400).json({ ok: false, error });
-
-    const { user, email } = await registerUserWithEmail(value);
+    const { user, email } = await registerUserWithEmail(req.validatedBody);
     return res.status(201).json({
       ok: true,
       message: "Registration successful. You can now log in.",
@@ -21,10 +17,16 @@ export async function register(req, res, next) {
 
 export async function login(req, res, next) {
   try {
-    const { error, value } = validateLoginPayload(req.body);
-    if (error) return res.status(400).json({ ok: false, error });
+    const result = await loginUser(req.validatedBody);
+    return res.json({ ok: true, ...result });
+  } catch (error) {
+    return next(error);
+  }
+}
 
-    const result = await loginUser(value);
+export async function refresh(req, res, next) {
+  try {
+    const result = await refreshAccessToken({ refreshToken: req.body?.refreshToken });
     return res.json({ ok: true, ...result });
   } catch (error) {
     return next(error);
@@ -37,7 +39,7 @@ export function me(req, res) {
 
 export async function logout(req, res, next) {
   try {
-    await logoutSession(req.sessionId);
+    await logoutSession(req.user._id, req.body?.refreshToken);
     return res.json({ ok: true });
   } catch (error) {
     return next(error);

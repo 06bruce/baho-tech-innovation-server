@@ -3,15 +3,16 @@ import { normalizeLanguage, normalizeTheme } from "../../utils/normalizers.js";
 import { getDashboardAccessForUser } from "../disability/disability.service.js";
 import { findUserById, updateUserPreferences } from "./users.repository.js";
 
-export function getUserProfile(userId) {
-  return toPublicUser(findUserById(userId));
+export async function getUserProfile(userId) {
+  const user = await findUserById(userId);
+  return toPublicUser(user);
 }
 
 export function getDashboardAccess(user) {
   return getDashboardAccessForUser(user);
 }
 
-export function saveUserPreferences(userId, payload = {}) {
+export async function saveUserPreferences(userId, payload = {}) {
   const preferences = {};
 
   if (payload.preferredLanguage) {
@@ -26,5 +27,6 @@ export function saveUserPreferences(userId, payload = {}) {
     preferences.accessibilityPreferences = payload.accessibilityPreferences;
   }
 
-  return toPublicUser(updateUserPreferences(userId, preferences));
+  const user = await updateUserPreferences(userId, preferences);
+  return toPublicUser(user);
 }

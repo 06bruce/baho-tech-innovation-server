@@ -1,0 +1,127 @@
+[
+  {
+    "type": "team",
+    "slug": "nancy-teta-kwizera",
+    "title": "Nancy Teta Kwizera",
+    "name": "Nancy Teta Kwizera",
+    "role": "CEO & Founder",
+    "bio": "Leading Baho Tech with a vision for inclusive, accessible technology that empowers everyone.",
+    "story": [
+      "Nancy founded Baho Tech to make accessibility a default, not an afterthought. Her journey began with community-based projects where she saw firsthand how small design choices could either open doors or create barriers. That experience shaped a leadership style grounded in listening, research, and measurable impact.",
+      "As CEO, she guides product strategy with a clear principle: every feature must improve daily life for people with disabilities. She brings teams together across design, engineering, and advocacy to create solutions that are technically solid and socially meaningful. Her work balances innovation with responsibility, ensuring privacy, dignity, and usability remain core priorities.",
+      "Nancy also champions partnerships with schools, local organizations, and global accessibility groups. Through these collaborations, Baho Tech learns from real users and builds tools that fit the realities of their environments. Her long-term vision is a digital ecosystem where accessibility is the standard—not the exception."
+    ],
+    "image": "/images/Zera.jpeg",
+    "imageAlt": "Nancy Teta Kwizera"
+  },
+  {
+    "type": "team",
+    "slug": "mugisha-valentin",
+    "title": "Mugisha Valentin",
+    "name": "Mugisha Valentin",
+    "role": "CFO",
+    "bio": "Guiding Baho Tech's financial strategy with a focus on sustainable growth and operational discipline.",
+    "story": [
+      "Valentin leads financial planning and resource strategy to keep Baho Tech growing on a strong foundation. He manages budgeting, forecasting, and investment priorities to ensure the company can scale responsibly while staying focused on impact.",
+      "He works closely with leadership to align financial decisions with product development, hiring, and long-term business goals. His approach emphasizes clarity, accountability, and making smart choices that support both innovation and stability.",
+      "Valentin believes sound financial stewardship creates room for bold ideas to succeed. By building healthy systems behind the scenes, he helps the team deliver accessible technology with confidence and consistency."
+    ],
+    "image": "/images/Valentin.jpeg",
+    "imageAlt": "Mugisha Valentin"
+  },
+  {
+    "type": "team",
+    "slug": "muganwa-rogers",
+    "title": "Muganwa Rogers",
+    "name": "Muganwa Rogers",
+    "role": "Operations Manager",
+    "bio": "Keeping teams, workflows, and delivery aligned so ideas move smoothly from planning to execution.",
+    "story": [
+      "Rogers coordinates day-to-day operations to help Baho Tech move with focus and consistency. He supports cross-team planning, timelines, and process improvements that reduce friction and keep important work on track.",
+      "His role connects strategy with execution, making sure communication stays clear across departments and that operational systems support the team's pace of growth. He pays attention to the details that help projects stay organized, measurable, and dependable.",
+      "Rogers values structure that empowers people rather than slowing them down. He sees strong operations as the quiet engine behind great products, partnerships, and customer experiences."
+    ],
+    "image": "/images/Rogers.jpeg",
+    "imageAlt": "Muganwa Rogers"
+  },
+  {
+    "type": "team",
+    "slug": "nshuti-shyaka-bruce",
+    "title": "Nshuti Shyaka Bruce",
+    "name": "Nshuti Shyaka Bruce",
+    "role": "DevOps & Backend Engineer",
+    "bio": "Building the infrastructure and backend systems that keep products secure, scalable, and continuously available.",
+    "story": [
+      "Bruce works across backend engineering and DevOps to ensure Baho Tech's platforms are reliable from code to deployment. He designs services, automates delivery pipelines, and strengthens infrastructure so releases can move quickly without sacrificing stability.",
+      "His focus includes cloud operations, deployment workflows, observability, and backend performance. He helps the team maintain resilient environments where products can scale smoothly and issues can be detected before they affect users.",
+      "Bruce approaches systems engineering with a strong reliability mindset. For him, good infrastructure is invisible at its best: secure, efficient, and always ready to support the people who depend on it."
+    ],
+    "image": "/images/cto.jpg",
+    "imageAlt": "Nshuti Shyaka Bruce"
+  },
+  {
+    "type": "news",
+    "slug": "cohort-graduation",
+    "title": "Our First High School Coding Cohort Has Graduated!",
+    "description": "From their first lines of code to building their final projects, our students have come a long way. The final showcase was the perfect way to close the track, where they presented to guest software engineers and founders. We're incredibly proud and hope this is just the beginning.",
+    "content": "From their first lines of code to building their final projects, our students have come a long way. The final showcase was the perfect way to close the track, where they presented to guest software engineers and founders. We're incredibly proud and hope this is just the beginning.",
+    "image": "/images/meeting 2.jpeg",
+    "imageAlt": "High School Coding Cohort 1",
+    "tags": ["Coding basics", "Final projects", "Mentorship"],
+    "metadata": {
+      "gallery": [
+        { "src": "/images/meeting 2.jpeg", "alt": "High School Coding Cohort 1" },
+        { "src": "/images/meeting2.jpeg", "alt": "High School Coding Cohort 2" },
+        { "src": "/images/meeting3.jpeg", "alt": "High School Coding Cohort 3" }
+      ]
+    },
+    "sortOrder": 2
+  },
+  {
+    "type": "news",
+    "slug": "team-first-meeting",
+    "title": "Baho Tech Team First Meeting",
+    "description": "The Baho Tech team held its first meeting to align on our mission, product roadmap, and the assistive technology work ahead. The conversation focused on building practical tools for accessibility, starting with SBS, Talka, and the upcoming Sense AI experience.",
+    "content": "The Baho Tech team held its first meeting to align on our mission, product roadmap, and the assistive technology work ahead. The conversation focused on building practical tools for accessibility, starting with SBS, Talka, and the upcoming Sense AI experience.",
+    "image": "/images/a.jpeg",
+    "imageAlt": "Baho Tech team first meeting photo 1",
+    "tags": ["Shared mission", "Product planning", "Team alignment"],
+    "metadata": {
+      "gallery": [
+        { "src": "/images/a.jpeg", "alt": "Baho Tech team first meeting photo 1" },
+        { "src": "/images/b.jpeg", "alt": "Baho Tech team first meeting photo 2" },
+        { "src": "/images/c.jpeg", "alt": "Baho Tech team first meeting photo 3" },
+        { "src": "/images/d.jpeg", "alt": "Baho Tech team first meeting photo 4" },
+        { "src": "/images/e.jpeg", "alt": "Baho Tech team first meeting photo 5" }
+      ]
+    },
+    "sortOrder": 1
+  },
+  {
+    "type": "project",
+    "slug": "sbs-smart-blind-stick",
+    "title": "SBS — Smart Blind Stick",
+    "description": "A smart assistive mobility solution designed to provide additional environmental awareness and support greater independence for people with visual impairments.",
+    "content": "SBS is our Smart Blind Stick, currently at MVP stage. It focuses on practical mobility support, obstacle awareness, and the service workflows around it, while the hardware and software experience continue to mature through testing with the people who use it.",
+    "tags": ["MVP", "Mobility", "Assistive technology"],
+    "sortOrder": 3
+  },
+  {
+    "type": "project",
+    "slug": "sense-ai",
+    "title": "Sense AI",
+    "description": "An AI accessibility companion for voice, vision, translation, and hands-free assistance.",
+    "content": "Sense AI is planned as Baho Inclusive Tech's intelligent accessibility layer. It will combine voice control, scene understanding, translation, and page guidance so users can move through digital systems with less friction.",
+    "tags": ["Coming soon", "AI", "Accessibility"],
+    "sortOrder": 2
+  },
+  {
+    "type": "project",
+    "slug": "talka",
+    "title": "Talka",
+    "description": "A communication and reading assistant built for accessible daily interactions.",
+    "content": "Talka is in development as a practical assistant for communication, reading support, and multilingual accessibility workflows. It is being shaped around real user needs before a full release.",
+    "tags": ["In development", "Communication", "Reading support"],
+    "sortOrder": 1
+  }
+]

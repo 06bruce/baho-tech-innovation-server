@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Claude Muhire",
+    "email": "claude.muhire@example.com",
+    "subject": "Partnership inquiry",
+    "message": "Hello, our NGO works with people with visual impairments and we would love to pilot Baho Tech with our community in Kigali.",
+    "createdAt": "2026-08-02T09:15:00.000Z"
+  },
+  {
+    "name": "Aline Uwase",
+    "email": "aline.uwase@example.com",
+    "subject": "Feedback about voice commands",
+    "message": "The voice command feature is great on practice. It would help a lot if swearing commands became available on mobile too.",
+    "createdAt": "2026-08-19T14:40:00.000Z"
+  },
+  {
+    "name": "Jean Bosco",
+    "email": "jeanb@example.com",
+    "subject": "Registration issue",
+    "message": "I was not able to finish registration on my phone after choosing the deaf category. The button did nothing.",
+    "createdAt": "2026-09-01T11:05:00.000Z"
+  }
+]

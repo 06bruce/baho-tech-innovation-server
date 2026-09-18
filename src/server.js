@@ -1,6 +1,6 @@
 import { env, validateEnvironment } from "./config/env.js";
 import { createApp } from "./app.js";
-import { connectDatabase, initializeDatabase } from "./database/connection.js";
+import { disconnectDatabase, initializeDatabase } from "./database/connection.js";
 
 // Validate environment configuration first
 validateEnvironment();
@@ -8,14 +8,11 @@ validateEnvironment();
 // Create Express app
 const app = createApp();
 
-const baseUrl = env.host
-  ? `http://${env.host}:${env.port}`
-  : `http://localhost:${env.port}`;
+const baseUrl = env.serverUrl || (env.host ? `http://${env.host}:${env.port}` : `http://localhost:${env.port}`);
 
 async function startServer() {
-  // Connect to database and initialize schema + seed
-  const db = connectDatabase();
-  await initializeDatabase(db);
+  // Connect to MongoDB, build indexes, and ensure the admin seed
+  await initializeDatabase();
 
   // Start listening
   const server = env.host
@@ -33,7 +30,7 @@ async function startServer() {
     console.log(`   AI Assistant: ${baseUrl}/api/ai-assistant`);
     console.log(`   More at: ${baseUrl}/api/*\n`);
     console.log(`🔗 Frontend: ${env.clientOrigin}`);
-    console.log(`⏰ Session TTL: ${env.sessionTtlDays} days\n`);
+    console.log(`⏰ Refresh token TTL: ${env.refreshTokenTtlDays} days\n`);
   }
 
   server.on("error", (error) => {
@@ -42,19 +39,17 @@ async function startServer() {
   });
 
   // Graceful shutdown
-  process.on("SIGTERM", () => {
-    console.log("📴 SIGTERM signal received: closing HTTP server");
-    server.close(() => {
+  function shutdown(signal) {
+    console.log(`\n${signal} received: closing HTTP server`);
+    server.close(async () => {
       console.log("✅ HTTP server closed");
+      await disconnectDatabase();
+      process.exit(0);
     });
-  });
+  }
 
-  process.on("SIGINT", () => {
-    console.log("📴 SIGINT signal received: closing HTTP server");
-    server.close(() => {
-      console.log("✅ HTTP server closed");
-    });
-  });
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+  process.on("SIGINT", () => shutdown("SIGINT"));
 }
 
 startServer().catch((error) => {

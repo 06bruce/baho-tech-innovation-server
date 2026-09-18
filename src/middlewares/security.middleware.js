@@ -51,17 +51,29 @@ export const apiLimiter = rateLimit({
 
 /**
  * Authentication endpoints rate limiter
- * 15 requests per 15 minutes per IP
- * Prevents brute force attacks on login/register
+ * 5 requests per 15 minutes per IP
+ * Prevents brute force / credential stuffing on login and credential rotation.
  */
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 15, // Limit each IP to 15 requests per windowMs
+  max: 5, // Limit each IP to 5 requests per windowMs
   message: "Too many authentication attempts, please try again later.",
   standardHeaders: true,
   legacyHeaders: false,
   skipSuccessfulRequests: false, // Count all requests
   skipFailedRequests: false, // Count failed requests too
+});
+
+/**
+ * Registration endpoints rate limiter
+ * 5 requests per 15 minutes per IP
+ */
+export const registerLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 registrations per windowMs
+  message: "Too many registration attempts, please try again later.",
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 /**

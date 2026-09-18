@@ -1,6 +1,9 @@
 import dotenv from "dotenv";
 
-dotenv.config();
+const isProduction = process.env.NODE_ENV === "production";
+const envFilePath = process.env.ENV_FILE || (isProduction ? ".env.production" : ".env");
+
+dotenv.config({ path: envFilePath });
 
 function csv(value) {
   return String(value || "")
@@ -21,9 +24,14 @@ export const env = {
   nodeEnv: process.env.NODE_ENV || "development",
   port: numberFromEnv(process.env.PORT, 3001),
   host: isProduction ? "" : process.env.HOST || "127.0.0.1",
-  databaseUrl: process.env.DATABASE_URL || "",
+  serverUrl: process.env.SERVER_URL || "",
+  mongoUri: process.env.MONGODB_URI || "",
   clientOrigin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
   clientOrigins: csv(process.env.CLIENT_ORIGINS || process.env.CLIENT_ORIGIN || "http://localhost:5173,http://localhost:5174"),
+  jwtSecret: process.env.JWT_SECRET || "",
+  jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || "",
+  accessTokenTtlMs: numberFromEnv(process.env.ACCESS_TOKEN_TTL_MINUTES, 15) * 60 * 1000,
+  refreshTokenTtlDays: numberFromEnv(process.env.REFRESH_TOKEN_TTL_DAYS, 30),
   sessionTtlDays: numberFromEnv(process.env.SESSION_TTL_DAYS, 7),
   admin: {
     name: process.env.ADMIN_NAME || "Baho Tech Admin",
@@ -58,21 +66,31 @@ export function validateEnvironment() {
   const errors = [];
 
   // Critical requirements
-  if (!env.databaseUrl) {
-    errors.push("DATABASE_URL must be set");
+  if (!env.mongoUri) {
+    errors.push("MONGODB_URI must be set");
   }
 
   if (!env.clientOrigins || env.clientOrigins.length === 0) {
     errors.push("CLIENT_ORIGINS or CLIENT_ORIGIN must be set");
   }
 
+  if (!env.jwtSecret || env.jwtSecret.length < 16) {
+    errors.push("JWT_SECRET must be set (min 16 characters)");
+  }
+
+  if (!env.jwtRefreshSecret || env.jwtRefreshSecret.length < 16) {
+    errors.push("JWT_REFRESH_SECRET must be set (min 16 characters)");
+  }
+
+  if (process.env.NODE_ENV !== "production" && env.jwtSecret === env.jwtRefreshSecret) {
+    errors.push("JWT_SECRET and JWT_REFRESH_SECRET must be different values");
+  }
+
   if (isProduction) {
-    // Production-specific validations
     if (!env.admin.email || !env.admin.password) {
       errors.push("ADMIN_EMAIL and ADMIN_PASSWORD must be set in production");
     }
 
-    // Optional but recommended for production
     if (!env.smtp.host || !env.smtp.user) {
       console.warn("[WARNING] SMTP not configured - email features will not work");
     }
@@ -88,31 +106,25 @@ export function validateEnvironment() {
     process.exit(1);
   }
 
-  // Log successful configuration
-  console.log("\n╔════════════════════════════════════════════════╗");
-  console.log("║     Baho Tech API - Configuration Status       ║");
-  console.log("╚════════════════════════════════════════════════╝\n");
-  
   console.log("✅ Environment Configuration:");
   console.log(`   Node Environment: ${env.nodeEnv.toUpperCase()}`);
-  console.log(`   Server URL: ${env.nodeEnv === 'production' ? env.nodeEnv === 'production' ? 'https://baho-tech-innovation-server-r3v4.onrender.com' : `http://${env.host}:${env.port}` : `http://${env.host}:${env.port}`}`);
+  console.log(`   Server URL: ${env.serverUrl || `http://${env.host || "localhost"}:${env.port}`}`);
   console.log(`   API Base Path: /api`);
-  
+
   console.log("\n✅ Frontend Origins (CORS Allowed):");
   env.clientOrigins.forEach((origin) => {
     console.log(`   - ${origin}`);
   });
 
   console.log("\n✅ Database:");
-  console.log("   Type: PostgreSQL (Supabase)");
-  
+  console.log("   Type: MongoDB (Mongoose)");
+
   console.log("\n✅ Features:");
-  console.log(`   - Authentication: Enabled (Session TTL: ${env.sessionTtlDays} days)`);
+  console.log(`   - Authentication: Enabled (JWT + refresh tokens, TTL ${env.refreshTokenTtlDays} days)`);
   console.log(`   - Rate Limiting: Enabled`);
   console.log(`   - Security Headers: Enabled (Helmet.js)`);
   console.log(`   - AI Assistant: ${env.gemini.apiKey ? "Enabled" : "Disabled (set GEMINI_API_KEY)"}`);
   console.log(`   - Email Notifications: ${env.smtp.host ? "Enabled" : "Disabled (set SMTP_* variables)"}`);
-  
+
   console.log("\n" + "═".repeat(50) + "\n");
 }
-

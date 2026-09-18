@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 import { env } from "./config/env.js";
 import { apiRoutes } from "./routes/index.js";
 import { errorHandler, notFoundHandler } from "./middlewares/error.middleware.js";
-import { securityHeaders, apiLimiter, authLimiter, contactLimiter } from "./middlewares/security.middleware.js";
+import { securityHeaders, apiLimiter, authLimiter, contactLimiter, registerLimiter } from "./middlewares/security.middleware.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,15 +14,17 @@ const clientDistPath = path.resolve(__dirname, "../../dist");
 const clientIndexPath = path.join(clientDistPath, "index.html");
 
 /**
- * Helper function to validate CORS origin
- * Uses exact match for security (no substring matching)
+ * CORS origin validator.
+ * Exact-match allowlist — a request is rejected when its Origin is not listed.
+ * `cors` requires the function form `(origin, callback)`; never return a value.
  */
-function isCorsOriginAllowed(origin) {
-  if (!origin) return true; // Same-origin requests are allowed
+function isCorsOriginAllowed(origin, callback) {
+  if (!origin) {
+    callback(null, true); // Same-origin / non-browser requests are allowed
+    return;
+  }
 
-  return env.clientOrigins.some((allowedOrigin) => {
-    return origin === allowedOrigin;
-  });
+  callback(null, env.clientOrigins.some((allowedOrigin) => origin === allowedOrigin));
 }
 
 export function createApp() {
@@ -81,9 +83,10 @@ export function createApp() {
   // General API rate limiting
   app.use("/api", apiLimiter);
 
-  // Specific rate limiters for sensitive endpoints
+  // Stricter limiters for credential / abuse-sensitive endpoints
   app.use("/api/auth/login", authLimiter);
-  app.use("/api/auth/register", authLimiter);
+  app.use("/api/auth/refresh", authLimiter);
+  app.use("/api/auth/register", registerLimiter);
   app.use("/api/contact", contactLimiter);
 
   // API routes

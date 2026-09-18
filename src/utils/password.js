@@ -1,13 +1,30 @@
+import bcrypt from "bcryptjs";
 import crypto from "crypto";
 
-export function hashPassword(password, salt = crypto.randomBytes(16).toString("hex")) {
-  const hash = crypto.pbkdf2Sync(String(password), salt, 120000, 64, "sha512").toString("hex");
-  return { hash, salt };
+const BCRYPT_ROUNDS = 10;
+const PBKDF2_ITERATIONS = 120000;
+
+export function hashPassword(password) {
+  const hash = bcrypt.hashSync(String(password), BCRYPT_ROUNDS);
+  return { hash, salt: null, scheme: "bcrypt" };
 }
 
 export function verifyPassword(password, user) {
-  const { hash } = hashPassword(password, user.password_salt);
-  const stored = Buffer.from(user.password_hash, "hex");
-  const candidate = Buffer.from(hash, "hex");
-  return stored.length === candidate.length && crypto.timingSafeEqual(stored, candidate);
+  if (!user || !user.passwordHash) return false;
+
+  if (user.passwordScheme === "pbkdf2") {
+    const { hash } = hashLegacyPbkdf2(password, user.passwordSalt);
+    const stored = Buffer.from(user.passwordHash, "hex");
+    const candidate = Buffer.from(hash, "hex");
+    return stored.length === candidate.length && crypto.timingSafeEqual(stored, candidate);
+  }
+
+  const plain = String(password);
+  return bcrypt.compareSync(plain, user.passwordHash);
+}
+
+export function hashLegacyPbkdf2(password, salt) {
+  return {
+    hash: crypto.pbkdf2Sync(String(password), String(salt), PBKDF2_ITERATIONS, 64, "sha512").toString("hex"),
+  };
 }

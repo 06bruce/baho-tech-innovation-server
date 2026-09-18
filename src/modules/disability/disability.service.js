@@ -25,7 +25,7 @@ export function getDashboardAccessForUser(user) {
     };
   }
 
-  const category = normalizeDisabilityCategory(user.disability_category || user.disabilityCategory);
+  const category = normalizeDisabilityCategory(user.disabilityCategory || user.disability_category);
 
   return {
     role: USER_ROLES.USER,

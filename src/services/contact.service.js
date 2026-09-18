@@ -1,5 +1,5 @@
 import { env } from "../config/env.js";
-import { getDatabase } from "../database/connection.js";
+import { Message } from "../models/message.model.js";
 import { createTransporter } from "./mail.service.js";
 
 export async function submitContactMessage({ name, email, subject, message }) {
@@ -9,14 +9,8 @@ export async function submitContactMessage({ name, email, subject, message }) {
     throw error;
   }
 
-  const createdAt = new Date().toISOString();
-  const db = getDatabase();
-
-  const result = await db.query(
-    "INSERT INTO messages (name, email, subject, message, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING id",
-    [name, email, subject, message, createdAt]
-  );
-  const messageId = result.rows[0].id;
+  const doc = await Message.create({ name, email, subject, message });
+  const messageId = String(doc._id);
 
   const transporter = createTransporter();
 

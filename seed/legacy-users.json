@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "full_name": "Baho Tech Admin",
+    "email": "admin@bahotech.com",
+    "password_hash": "24f73fa9b0e809ab273712224b644a2200e6c26b6961dbb8e388ae49e43ad70a05862688b4cf268d22710c61b7c032ee3118c5df8d62d0653cd53d6497edad81",
+    "password_salt": "5e41fd23a59ab32ab52b82d11b6b4d71",
+    "role": "admin",
+    "disability_category": null,
+    "preferred_language": "en",
+    "preferred_theme": "light",
+    "accessibility_preferences": "{}",
+    "phone": null,
+    "location": null,
+    "created_at": "2026-07-04T15:29:15.567Z",
+    "updated_at": "2026-07-04T15:29:15.567Z"
+  }
+]

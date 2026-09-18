@@ -1,16 +1,20 @@
 import { getDashboardAccess, getUserProfile, saveUserPreferences } from "./users.service.js";
 
-export function profile(req, res) {
-  return res.json({ ok: true, user: getUserProfile(req.user.id) });
+export async function profile(req, res, next) {
+  try {
+    return res.json({ ok: true, user: await getUserProfile(req.user._id) });
+  } catch (error) {
+    return next(error);
+  }
 }
 
 export function dashboardAccess(req, res) {
   return res.json({ ok: true, access: getDashboardAccess(req.user) });
 }
 
-export function updatePreferences(req, res, next) {
+export async function updatePreferences(req, res, next) {
   try {
-    return res.json({ ok: true, user: saveUserPreferences(req.user.id, req.body || {}) });
+    return res.json({ ok: true, user: await saveUserPreferences(req.user._id, req.validatedBody || {}) });
   } catch (error) {
     return next(error);
   }
