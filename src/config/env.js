@@ -18,7 +18,6 @@ function numberFromEnv(value, fallback) {
 }
 
 const geminiModels = csv(process.env.GEMINI_MODELS || process.env.GEMINI_MODEL || "gemini-2.5-flash,gemini-2.5-flash-lite");
-const isProduction = process.env.NODE_ENV === "production";
 
 export const env = {
   nodeEnv: process.env.NODE_ENV || "development",
